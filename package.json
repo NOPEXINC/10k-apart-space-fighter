@@ -1,0 +1,26 @@
+{
+  "name": "10kapart-cki-comp",
+  "version": "1.0.0",
+  "description": "10k competition entry by Christopher Imrie",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "clean": "rimraf build",
+    "start": "http-server src/",
+    "start:build": "npm run build && http-server build/",
+    "build": "npm run clean && mkdir build && mkdir build/css && mkdir build/js && npm run minify && npm run inline",
+    "minify": "html-minifier src/index.html -o build/index.html --collapse-whitespace && minify src/js/main.js > build/js/main.js && minify src/css/main.css > build/css/main.css",
+    "inline": "copy build/index.html > build/index.temp.html && inliner -n build/index.temp.html > build/index.html && rm build/index.temp.html"
+  },
+  "author": "Christopher Imrie",
+  "license": "ISC",
+  "devDependencies": {
+    "copy-cli": "^1.2.1",
+    "html-minifier": "^3.0.2",
+    "http-server": "^0.9.0",
+    "inliner": "^1.9.5",
+    "minify": "^2.0.11",
+    "rimraf": "^2.5.4",
+    "uglify": "^0.1.5"
+  }
+}
