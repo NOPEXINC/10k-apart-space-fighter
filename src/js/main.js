@@ -1,6 +1,7 @@
 (function(){
     var getEl = document.getElementById.bind(document),
         bel = document.body.addEventListener.bind(document.body),
+        startB = getEl("b"),
         canvas = getEl("c"),
         scrEl = getEl("score"),
         timeEl = getEl("time"),
@@ -31,8 +32,10 @@
         },
         score = 0,
         bounds={max:0, min:0},
+        expl = [],
         bullets = [],
         enemies = [],
+        started=false,
         bg = [];
 
 function init(){
@@ -44,11 +47,12 @@ function init(){
     canvas.height = cfg.h;
 
     ship.x = cfg.w / 2;
-    ship.y = cfg.h * 0.9;
+    ship.y = cfg.h * 1.2;
 
     bounds.max = cfg.h * cfg.boundFactor - (cfg.h / cfg.boundFactor);
     bounds.min = -(cfg.h / cfg.boundFactor);
 
+    startB.addEventListener("click", start);
     bel("touchstart", tstart);
     bel("touchmove", tmove);
     bel("touchend", tend);
@@ -67,6 +71,17 @@ function init(){
         })
     }
 
+    setInterval(function(){
+        window.requestAnimationFrame(renderLoop);
+    }, 1000/cfg.fps);
+}
+
+function start(){
+    document.body.className="";
+    document.body.className="m2";
+
+    started = true;
+
     setInterval(function () {
         t += 0.5;
         if(rand() > 0.3){
@@ -78,9 +93,6 @@ function init(){
     },500);
 
 
-    setInterval(function(){
-        window.requestAnimationFrame(renderLoop);
-    }, 1000/cfg.fps);
 }
 
 function mdown(e){
@@ -185,6 +197,11 @@ function renderLoop() {
         //hit
         for(j=0;j<enemies.length;j++) {
             if(M.sqrt(M.pow(bullets[i].x - enemies[j].x,2) + M.pow(bullets[i].y - enemies[j].y,2)) < 20){
+                expl.push({
+                    x: enemies[j].x,
+                    y: enemies[j].y,
+                    s: 0
+                });
                 bullets.splice(i, 1);
                 enemies.splice(j, 1);
                 incScore(cfg.scrHit);
@@ -193,7 +210,7 @@ function renderLoop() {
         }
     }
     //Enemies
-    ls(1, 4, "255,0,0");
+    ls(1, 4, "227,178,255");
     for(i=0;i<enemies.length;i++) {
         ctx.beginPath();
         ctx.moveTo(enemies[i].x, enemies[i].y-10);
@@ -209,8 +226,20 @@ function renderLoop() {
         }
     }
 
+    for(i=0;i<expl.length;i++) {
+        if(expl[i].s > 1){
+            expl.splice(i,1);
+            continue;
+        }
+        fs(1-expl[i].s,"152,0,202");
+        ctx.beginPath();
+        ctx.arc(expl[i].x, expl[i].y, 20 + expl[i].s*20, 0, 2*M.PI);
+        ctx.fill();
+        expl[i].s += 0.07;
+    }
+
     //Slowly move ship back to center
-    if(!ship.f && !cfg.kmode){
+    if(!ship.f && !cfg.kmode && started){
         ship.x = ship.x - 0.03 *(ship.x - cfg.w / 2);
         ship.y = ship.y - 0.03 *(ship.y - cfg.h * 0.9);
     }
@@ -219,8 +248,8 @@ function renderLoop() {
     timeEl.textContent = M.round(t) + 's';
 }
 
-function fs(a){
-    ctx.fillStyle = "rgba(255,255,255,"+a+")";
+function fs(a,b){
+    ctx.fillStyle = "rgba("+(b || "255,255,255")+","+a+")";
 }
 function ls(a,b,c){
     ctx.strokeStyle = "rgba("+(c || "255,255,255")+","+a+")";

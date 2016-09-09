@@ -1,14 +1,15 @@
 body,html {
     margin: 0;
     padding: 0;
-    background: #000;
+    background: #010048;
     height: 100%;
+    color: #fff;
+    text-align: center;
 }
 canvas, #score, #time {
     position: fixed;
     top: 0;
     left: 0;
-    color: #fff;
     font-family: sans-serif;
 }
 #score {
@@ -19,4 +20,44 @@ canvas, #score, #time {
     left: auto;
     top: 10px;
     right: 10px;
+}
+h1, button{
+    font-family: Verdana, sans-serif;
+    text-align: center;
+    font-size: 51px;
+    margin-top: 2em;
+    display: none;
+}
+.m1 h1, .m1 button{
+    display: block;
+}
+h1 span {
+    display: block;
+    font-size: 35px;
+}
+@keyframes blink {
+    0% {
+        opacity:0
+    }
+    100% {
+        opacity:1
+    }
+}
+button {
+    position: fixed;
+    z-index: 1;
+    top:60%;
+    left: 50%;
+    margin-left: -100px;
+    width:200px;
+    font-size: 16px;
+    color: #fff;
+    padding: 0.9em 1.6em;
+    border: 1px solid #fff;
+    background: transparent;
+    animation-name: blink;
+    animation-duration: 2s;
+    animation-direction: alternate;
+    animation-iteration-count: infinite;
+
 }
