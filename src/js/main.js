@@ -1,6 +1,6 @@
 (function(){
     var getEl = document.getElementById.bind(document),
-        bel = document.body.addEventListener,
+        bel = document.body.addEventListener.bind(document.body),
         canvas = getEl("c"),
         scrEl = getEl("score"),
         timeEl = getEl("time"),
@@ -16,7 +16,7 @@
             fireT:200,
             bgLimit:40,
             bgv:10, //velocity
-            bgS:3, //size
+            bgS:4, //size
             boundFactor:2,
             bulletV:15,
             enemyV:1,
