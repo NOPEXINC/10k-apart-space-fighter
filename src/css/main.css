@@ -4,8 +4,19 @@ body,html {
     background: #000;
     height: 100%;
 }
-canvas {
+canvas, #score, #time {
     position: fixed;
     top: 0;
     left: 0;
+    color: #fff;
+    font-family: sans-serif;
+}
+#score {
+    top: 10px;
+    left: 10px;
+}
+#time {
+    left: auto;
+    top: 10px;
+    right: 10px;
 }

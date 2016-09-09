@@ -1,5 +1,9 @@
 (function(){
-    var canvas = document.getElementById("c"),
+    var getEl = document.getElementById.bind(document),
+        bel = document.body.addEventListener,
+        canvas = getEl("c"),
+        scrEl = getEl("score"),
+        timeEl = getEl("time"),
         ctx = canvas.getContext('2d'),
         M = Math,
         fireInterval,
@@ -16,7 +20,8 @@
             boundFactor:2,
             bulletV:15,
             enemyV:1,
-            kmode:false
+            kmode:false,
+            scrHit:20
         },
         ship = {
             s:10, //size
@@ -24,6 +29,7 @@
             y: -100,
             f: false //firing
         },
+        score = 0,
         bounds={max:0, min:0},
         bullets = [],
         enemies = [],
@@ -43,14 +49,14 @@ function init(){
     bounds.max = cfg.h * cfg.boundFactor - (cfg.h / cfg.boundFactor);
     bounds.min = -(cfg.h / cfg.boundFactor);
 
-    document.body.addEventListener("touchstart", tstart);
-    document.body.addEventListener("touchmove", tmove);
-    document.body.addEventListener("touchend", tend);
-    document.body.addEventListener("mousedown", mdown);
-    document.body.addEventListener("mousemove", mmove);
-    document.body.addEventListener("mouseup", mup);
-    document.body.addEventListener("keydown", kdown);
-    document.body.addEventListener("keyup", kup);
+    bel("touchstart", tstart);
+    bel("touchmove", tmove);
+    bel("touchend", tend);
+    bel("mousedown", mdown);
+    bel("mousemove", mmove);
+    bel("mouseup", mup);
+    bel("keydown", kdown);
+    bel("keyup", kup);
 
     //Background
     for(i=0;i<cfg.bgLimit;i++) {
@@ -62,14 +68,14 @@ function init(){
     }
 
     setInterval(function () {
-        t++;
-        if(rand() > 0.5){
+        t += 0.5;
+        if(rand() > 0.3){
             enemies.push({
                 x:rand()*cfg.w,
                 y: -20
             });
         }
-    },1000);
+    },500);
 
 
     setInterval(function(){
@@ -181,6 +187,7 @@ function renderLoop() {
             if(M.sqrt(M.pow(bullets[i].x - enemies[j].x,2) + M.pow(bullets[i].y - enemies[j].y,2)) < 20){
                 bullets.splice(i, 1);
                 enemies.splice(j, 1);
+                incScore(cfg.scrHit);
                 break;
             }
         }
@@ -207,6 +214,9 @@ function renderLoop() {
         ship.x = ship.x - 0.03 *(ship.x - cfg.w / 2);
         ship.y = ship.y - 0.03 *(ship.y - cfg.h * 0.9);
     }
+
+    scrEl.textContent = "Score: " + score;
+    timeEl.textContent = M.round(t) + 's';
 }
 
 function fs(a){
@@ -215,6 +225,9 @@ function fs(a){
 function ls(a,b,c){
     ctx.strokeStyle = "rgba("+(c || "255,255,255")+","+a+")";
     ctx.lineWidth = b || 1;
+}
+function incScore(a){
+    score += a;
 }
 
 //GO!
